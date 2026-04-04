@@ -9,6 +9,11 @@
     "start": "node dist/index.js"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.79.0",
+    "@supabase/supabase-js": "^2.98.0",
+    "bullmq": "^5.0.0",
+    "ioredis": "^5.3.2",
+    "googleapis": "^144.0.0",
     "dotenv": "^16.4.0"
   },
   "devDependencies": {
