@@ -1,6 +1,6 @@
 /**
  * ELM Marketing Engine — INTEL Agent
- * BullMQ worker consuming from elm:queue:intel
+ * BullMQ worker consuming from elm-queue-intel
  * Pulls GA4 analytics, monitors competitors, generates weekly reports.
  */
 
@@ -269,7 +269,7 @@ Keep under 400 words. Be actionable.`
 
 // ─── BullMQ Worker ──────────────────────────────────────────────
 const worker = new Worker(
-  'elm:queue:intel',
+  'elm-queue-intel',
   async (job) => {
     const data = job.data as { task_id?: string; brand_id: string; task_type: string }
     console.log(`[ELM-INTEL] Processing: ${data.task_type}`)
@@ -317,7 +317,7 @@ const worker = new Worker(
   { connection: redisOpts, concurrency: 1, limiter: { max: 5, duration: 60000 } }
 )
 
-worker.on('ready', () => console.log('[ELM-INTEL] Worker ready — consuming from elm:queue:intel'))
+worker.on('ready', () => console.log('[ELM-INTEL] Worker ready — consuming from elm-queue-intel'))
 worker.on('error', (err) => console.error('[ELM-INTEL] Worker error:', err.message))
 
 process.on('SIGTERM', async () => {

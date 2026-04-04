@@ -24,7 +24,7 @@ AI-powered autonomous social media marketing system for Eastern Landscape & Maso
 
 - All Redis keys use `elm:` prefix
 - All Supabase tables use `mktg_` prefix
-- BullMQ queues: `elm:queue:copy`, `elm:queue:image`, `elm:queue:soc`, `elm:queue:intel`
+- BullMQ queues: `elm-queue-copy`, `elm-queue-image`, `elm-queue-soc`, `elm-queue-intel`
 - Brand-scoped: all crons loop over active brands (multi-brand ready)
 - Token budget enforced per-agent per-day via Redis
 

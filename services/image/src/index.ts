@@ -1,6 +1,6 @@
 /**
  * ELM Marketing Engine — IMAGE Agent
- * BullMQ worker consuming from elm:queue:image
+ * BullMQ worker consuming from elm-queue-image
  * Formats uploaded photos for each social platform using Sharp.
  */
 
@@ -154,7 +154,7 @@ async function handleFormatSingle(data: {
 
 // ─── BullMQ Worker ──────────────────────────────────────────────
 const worker = new Worker(
-  'elm:queue:image',
+  'elm-queue-image',
   async (job) => {
     console.log(`[ELM-IMAGE] Processing: ${job.name} (${job.id})`)
 
@@ -217,7 +217,7 @@ const worker = new Worker(
   }
 )
 
-worker.on('ready', () => console.log('[ELM-IMAGE] Worker ready — consuming from elm:queue:image'))
+worker.on('ready', () => console.log('[ELM-IMAGE] Worker ready — consuming from elm-queue-image'))
 worker.on('error', (err) => console.error('[ELM-IMAGE] Worker error:', err.message))
 
 process.on('SIGTERM', async () => {

@@ -21,9 +21,9 @@ function parseRedisUrl(url: string): { host: string; port: number } {
 
 const connection = parseRedisUrl(REDIS_URL)
 
-// Queue name convention: elm:queue:{agent}
-const QUEUE_PREFIX = 'elm:queue'
-const queueName = (agent: AgentName) => `${QUEUE_PREFIX}:${agent}`
+// Queue name convention: elm-queue-{agent} (BullMQ forbids colons in queue names)
+const QUEUE_PREFIX = 'elm-queue'
+const queueName = (agent: AgentName) => `${QUEUE_PREFIX}-${agent}`
 
 // Default job options
 const DEFAULT_JOB_OPTIONS = {

@@ -1,6 +1,6 @@
 /**
  * ELM Marketing Engine — SOC Agent
- * BullMQ worker consuming from elm:queue:soc
+ * BullMQ worker consuming from elm-queue-soc
  * Publishes approved content, monitors reviews, fetches engagement, sends review solicitation SMS.
  */
 
@@ -25,7 +25,7 @@ const redisOpts = (() => {
 
 const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_KEY!)
 const redis = new Redis(REDIS_URL)
-const copyQueue = new Queue('elm:queue:copy', { connection: redisOpts })
+const copyQueue = new Queue('elm-queue-copy', { connection: redisOpts })
 
 const META_TOKEN = process.env.META_ACCESS_TOKEN ?? ''
 const META_PAGE_ID = process.env.META_PAGE_ID ?? ''
@@ -272,7 +272,7 @@ async function sendReviewSolicitation(data: {
 
 // ─── BullMQ Worker ──────────────────────────────────────────────
 const worker = new Worker(
-  'elm:queue:soc',
+  'elm-queue-soc',
   async (job) => {
     const data = job.data as { task_id?: string; brand_id: string; task_type: string; input?: Record<string, unknown> }
     console.log(`[ELM-SOC] Processing: ${data.task_type}`)
@@ -323,7 +323,7 @@ const worker = new Worker(
   { connection: redisOpts, concurrency: 1, limiter: { max: 10, duration: 60000 } }
 )
 
-worker.on('ready', () => console.log('[ELM-SOC] Worker ready — consuming from elm:queue:soc'))
+worker.on('ready', () => console.log('[ELM-SOC] Worker ready — consuming from elm-queue-soc'))
 worker.on('error', (err) => console.error('[ELM-SOC] Worker error:', err.message))
 
 process.on('SIGTERM', async () => {

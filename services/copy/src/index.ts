@@ -1,6 +1,6 @@
 /**
  * ELM Marketing Engine — COPY Agent
- * BullMQ worker consuming from elm:queue:copy
+ * BullMQ worker consuming from elm-queue-copy
  * Generates content calendars, captions, and review responses via Claude.
  */
 
@@ -28,11 +28,11 @@ const redisOpts = (() => {
 // ─── Clients ────────────────────────────────────────────────────
 const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_KEY!)
 const redis = new Redis(REDIS_URL)
-const imageQueue = new Queue('elm:queue:image', { connection: redisOpts })
+const imageQueue = new Queue('elm-queue-image', { connection: redisOpts })
 
 // ─── BullMQ Worker ──────────────────────────────────────────────
 const worker = new Worker(
-  'elm:queue:copy',
+  'elm-queue-copy',
   async (job) => {
     const payload = job.data as { task_id: string; brand_id: string; task_type: string; input: Record<string, unknown> }
     console.log(`[ELM-COPY] Processing: ${payload.task_type} (${payload.task_id})`)
@@ -83,7 +83,7 @@ const worker = new Worker(
   }
 )
 
-worker.on('ready', () => console.log('[ELM-COPY] Worker ready — consuming from elm:queue:copy'))
+worker.on('ready', () => console.log('[ELM-COPY] Worker ready — consuming from elm-queue-copy'))
 worker.on('error', (err) => console.error('[ELM-COPY] Worker error:', err.message))
 
 // Graceful shutdown
