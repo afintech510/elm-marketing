@@ -1,0 +1,84 @@
+services:
+
+  # --- ORCHESTRATOR (Central Brain) ---
+  orchestrator:
+    build: ./services/orchestrator
+    container_name: elm_orchestrator
+    restart: unless-stopped
+    mem_limit: 512m
+    cpus: '0.75'
+    ports:
+      - "3200:3200"
+    env_file: .env
+    environment:
+      - PORT=3200
+    networks:
+      - elm_marketing_net
+      - hampton_net
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3200/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 30s
+      retries: 3
+    depends_on:
+      - copy
+      - image
+      - soc
+      - intel
+
+  # --- COPY Agent (Content Generation) ---
+  copy:
+    build: ./services/copy
+    container_name: elm_copy
+    restart: unless-stopped
+    mem_limit: 256m
+    cpus: '0.5'
+    env_file: .env
+    networks:
+      - elm_marketing_net
+      - hampton_net
+
+  # --- IMAGE Agent (Photo Formatting) ---
+  image:
+    build: ./services/image
+    container_name: elm_image
+    restart: unless-stopped
+    mem_limit: 256m
+    cpus: '0.5'
+    env_file: .env
+    networks:
+      - elm_marketing_net
+      - hampton_net
+
+  # --- SOC Agent (Social Publishing) ---
+  soc:
+    build: ./services/soc
+    container_name: elm_soc
+    restart: unless-stopped
+    mem_limit: 256m
+    cpus: '0.5'
+    env_file: .env
+    networks:
+      - elm_marketing_net
+      - hampton_net
+
+  # --- INTEL Agent (Analytics & Competitors) ---
+  intel:
+    build: ./services/intel
+    container_name: elm_intel
+    restart: unless-stopped
+    mem_limit: 256m
+    cpus: '0.5'
+    env_file: .env
+    networks:
+      - elm_marketing_net
+      - hampton_net
+
+# --- NETWORKS ---
+networks:
+  elm_marketing_net:
+    driver: bridge
+  hampton_net:
+    external: true
+    name: hosthampton_hampton_net
