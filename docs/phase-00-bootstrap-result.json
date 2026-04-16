@@ -1,0 +1,11 @@
+{
+  "phase": "00",
+  "ranAt": "2026-04-16T13:49:49.879Z",
+  "googleAdsCustomerId": "5409526270",
+  "gmcMerchantId": "5578269156",
+  "storeCode": "ELM-FROWEIN-01",
+  "conversionActionPurchase": "customers/5409526270/conversionActions/7577588071",
+  "conversionActionLead": "customers/5409526270/conversionActions/7577264147",
+  "omnichannelSettings": "MANUAL_SETUP_REQUIRED",
+  "storeNote": "Store entity managed via GBP link, not Merchant API LFP"
+}
