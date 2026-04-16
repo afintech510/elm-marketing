@@ -13,6 +13,7 @@
 import { getAccessToken } from "../auth/google";
 
 const BASE = "https://merchantapi.googleapis.com";
+const API_DATA_SOURCE = "accounts/5578269156/dataSources/10524000589"; // Content API data source
 
 type MerchantApiError = {
   code: number;
@@ -55,21 +56,20 @@ export async function upsertProductInput(
   merchantId: string,
   offer: Record<string, any>
 ): Promise<any> {
-  // Merchant API v1beta: top-level fields are channel/feedLabel/offerId/contentLanguage,
-  // everything else goes under 'attributes'
-  const { offerId, channel, contentLanguage, feedLabel, ...attributes } = offer;
+  // Merchant API v1: top-level fields are offerId/feedLabel/contentLanguage,
+  // everything else goes under 'productAttributes'. Channel is determined by dataSource.
+  const { offerId, channel: _channel, contentLanguage, feedLabel, ...productAttributes } = offer;
 
   const payload = {
-    channel,
+    offerId,
     contentLanguage,
     feedLabel,
-    offerId,
-    attributes,
+    productAttributes,
   };
 
   return merchantFetch(
     brandId,
-    `/products/v1beta/accounts/${merchantId}/productInputs:insert`,
+    `/products/v1/accounts/${merchantId}/productInputs:insert?dataSource=${API_DATA_SOURCE}`,
     {
       method: "POST",
       body: JSON.stringify(payload),
@@ -88,7 +88,7 @@ export async function deleteProductInput(
   const name = `accounts/${merchantId}/productInputs/${offerId}`;
   await merchantFetch(
     brandId,
-    `/products/v1beta/${name}?dataSource=api&feedLabel=${feedLabel}&contentLanguage=${contentLanguage}`,
+    `/products/v1/${name}?dataSource=${API_DATA_SOURCE}&feedLabel=${feedLabel}&contentLanguage=${contentLanguage}`,
     { method: "DELETE" }
   );
 }
@@ -101,7 +101,7 @@ export async function listProducts(
 ): Promise<any[]> {
   const result = await merchantFetch(
     brandId,
-    `/products/v1beta/accounts/${merchantId}/products?pageSize=${pageSize}`
+    `/products/v1/accounts/${merchantId}/products?pageSize=${pageSize}`
   );
   return result.products || [];
 }
@@ -114,6 +114,6 @@ export async function getProductStatus(
 ): Promise<any> {
   return merchantFetch(
     brandId,
-    `/products/v1beta/${productName}`
+    `/products/v1/${productName}`
   );
 }

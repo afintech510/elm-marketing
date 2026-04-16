@@ -48,7 +48,11 @@ const BRAND = "Eastern Landscape & Mason Supply";
 const SITE_URL = "https://easternlm.com";
 
 export function buildOfferId(brandId: string, slug: string, channel: "online" | "local"): string {
-  return `${brandId}-${slug}-${channel}`;
+  // GMC offerId max 50 chars. Prefix "elm-" (4) + "-online" (7) = 11 overhead → 39 for slug
+  const prefix = brandId === "eastern-lm" ? "elm" : brandId.slice(0, 6);
+  const maxSlug = 50 - prefix.length - 1 - channel.length - 1; // prefix-slug-channel
+  const trimmedSlug = slug.slice(0, maxSlug);
+  return `${prefix}-${trimmedSlug}-${channel}`;
 }
 
 export function buildOffer(
