@@ -132,23 +132,22 @@ export async function runFeedSync(brandId: string): Promise<SyncResult> {
 
   const result: SyncResult = { synced: 0, errors: 0, removed: 0, details: [] };
   const currentOfferIds = new Set<string>();
-  const channels: Array<"online" | "local"> = ["online", "local"];
+  // Online channel only for now. Local (LIA) adds in Phase 02c after store entity setup.
+  const channel = "online" as const;
 
   for (const product of products) {
-    for (const channel of channels) {
-      const offerId = buildOfferId(brandId, product.slug, channel);
-      currentOfferIds.add(offerId);
+    const offerId = buildOfferId(brandId, product.slug, channel);
+    currentOfferIds.add(offerId);
 
-      const { status, error } = await syncOffer(product, brandId, merchantId, channel);
+    const { status, error } = await syncOffer(product, brandId, merchantId, channel);
 
-      if (status === "synced") {
-        result.synced++;
-      } else {
-        result.errors++;
-      }
-
-      result.details.push({ slug: product.slug, channel, status, error });
+    if (status === "synced") {
+      result.synced++;
+    } else {
+      result.errors++;
     }
+
+    result.details.push({ slug: product.slug, channel, status, error });
   }
 
   // Remove stale offers
