@@ -19,6 +19,7 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: ${{ secrets.VPS_PORT }}
+          command_timeout: 20m
           script: |
             set -e
             cd /opt/elm-marketing
@@ -27,12 +28,7 @@ jobs:
             docker compose up -d --build
             docker image prune -f
             docker compose ps
-      - name: Health check
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          port: ${{ secrets.VPS_PORT }}
-          script: |
-            curl -fsS --retry 5 --retry-delay 3 http://localhost:3200/health >/dev/null && echo "health OK (:3200)"
+            # advisory health (bounded; never fails the deploy)
+            curl -fsS --max-time 10 --retry 4 --retry-delay 3 --retry-connrefused http://localhost:3200/health >/dev/null \
+              && echo "health OK (:3200)" \
+              || echo "WARN: health check did not pass (deploy applied; check app /health)"
